@@ -1,0 +1,88 @@
+{
+  "binary": {
+    "LogisticRegression": {
+      "accuracy": 0.8585,
+      "precision": 0.1791044776119403,
+      "recall": 0.8823529411764706,
+      "f1": 0.2977667493796526,
+      "roc_auc": 0.9385047497259774,
+      "confusion_matrix": [
+        [
+          1657,
+          275
+        ],
+        [
+          8,
+          60
+        ]
+      ]
+    },
+    "RandomForest": {
+      "accuracy": 0.99,
+      "precision": 0.9615384615384616,
+      "recall": 0.7352941176470589,
+      "f1": 0.8333333333333334,
+      "roc_auc": 0.9791704725368409,
+      "confusion_matrix": [
+        [
+          1930,
+          2
+        ],
+        [
+          18,
+          50
+        ]
+      ]
+    },
+    "Keras DNN (Deep Learning)": {
+      "accuracy": 0.978,
+      "precision": 0.6714285714285714,
+      "recall": 0.6911764705882353,
+      "f1": 0.6811594202898551,
+      "roc_auc": 0.9786186213615882,
+      "confusion_matrix": [
+        [
+          1909,
+          23
+        ],
+        [
+          21,
+          47
+        ]
+      ]
+    }
+  },
+  "best_model": "RandomForest",
+  "failure_types": {
+    "TWF": {
+      "support": 10,
+      "recall": 0.0,
+      "precision": 0.0,
+      "f1": 0.0
+    },
+    "HDF": {
+      "support": 29,
+      "recall": 0.7586206896551724,
+      "precision": 0.9166666666666666,
+      "f1": 0.8301886792452831
+    },
+    "PWF": {
+      "support": 13,
+      "recall": 1.0,
+      "precision": 1.0,
+      "f1": 1.0
+    },
+    "OSF": {
+      "support": 16,
+      "recall": 0.9375,
+      "precision": 1.0,
+      "f1": 0.967741935483871
+    },
+    "RNF": {
+      "support": 4,
+      "recall": 0.0,
+      "precision": 0.0,
+      "f1": 0.0
+    }
+  }
+}
