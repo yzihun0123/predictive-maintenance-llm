@@ -83,6 +83,9 @@ class MaintenanceAgent:
     def _fill(self, args: dict) -> tuple[dict, list[str], list[str]]:
         """빠진 값은 평균값으로 채우고, 학습 범위를 벗어난 값을 찾는다."""
         assumed, out_of_range = [], []
+        grade = str(args.get("product_type", "")).strip().upper()[:1]
+        if grade not in ("L", "M", "H"):
+            raise ValueError("제품 등급은 L, M, H 중 하나여야 함. 작업자에게 등급을 물어볼 것")
         for k, v in DEFAULTS.items():
             if args.get(k) is None:
                 args[k] = v
@@ -90,7 +93,7 @@ class MaintenanceAgent:
         for k, (lo, hi) in RANGES.items():
             if not lo <= args[k] <= hi:
                 out_of_range.append(f"{k}={args[k]} (학습 범위 {lo}~{hi})")
-        args["product_type"] = str(args["product_type"]).upper()[:1]
+        args["product_type"] = grade
         labels = {"air_temp_c": ("주변 온도", "°C"), "process_temp_c": ("가공 온도", "°C"),
                   "rpm": ("회전수", "rpm")}
         assumed = [f"{labels[k][0]} {args[k]:g}{labels[k][1]}" for k in assumed]
