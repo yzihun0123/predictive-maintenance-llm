@@ -120,6 +120,29 @@ flowchart TD
 <img src="outputs/dl_learning_curve.png" width="49%">
 </p>
 
+<img src="outputs/confusion_matrices.png" width="98%">
+
+### 딥러닝 실험
+
+Keras DNN의 기준 설정(파생 변수 사용, 은닉층 64-32, Dropout 0.3, 제곱근 클래스 가중치)에서 한 가지만 바꿔 같은 데이터로 다시 학습했습니다. (`python dl_experiments.py`)
+
+| 실험 | F1 | 재현율 | 정밀도 | 놓친 고장 | 잘못된 경보 |
+|---|---|---|---|---|---|
+| 기준 모델 (64-32) | 0.681 | 0.691 | 0.671 | 21 | 23 |
+| 파생 변수 제외 | 0.654 | 0.735 | 0.588 | 18 | 35 |
+| 은닉층 1개 (32) | 0.667 | 0.735 | 0.610 | 18 | 32 |
+| 은닉층 3개 (128-64-32) | **0.723** | 0.691 | 0.758 | 21 | 15 |
+| Dropout 없음 | 0.658 | 0.735 | 0.595 | 18 | 34 |
+| 클래스 가중치 없음 | 0.661 | 0.559 | 0.809 | 30 | 9 |
+| 클래스 가중치 완전 균형 | 0.521 | 0.912 | 0.365 | 6 | 108 |
+
+- 파생 변수와 Dropout은 잘못된 경보를 줄였습니다 (빼면 23건 → 34~35건).
+- 은닉층 3개가 가장 좋았지만 랜덤포레스트(F1 0.833)보다는 낮아, 에이전트의 예측 도구는 랜덤포레스트를 유지했습니다.
+- 클래스 가중치는 없으면 고장을 많이 놓치고, 완전 균형이면 경보가 지나치게 많아집니다. 제곱근 가중치가 그 사이입니다.
+- 실험마다 1회씩 학습한 결과라, 고장 68건 기준 몇 건 차이는 무작위 변동일 수 있습니다.
+
+<img src="outputs/dl_experiments.png" width="98%">
+
 ## LLM을 믿을 수 있게 만든 과정
 
 개발하면서 LLM이 틀리는 경우를 여러 번 만났고, 그때마다 프롬프트에만 기대지 않고 코드로 막았습니다.
@@ -137,6 +160,8 @@ flowchart TD
 ```
 ├── app.py                  Streamlit 앱 (정비 상담 / 직접 진단 / 모델 성능)
 ├── train.py                예측 모델 학습 · 평가 · 그래프 저장
+├── make_figures.py         보고서용 그래프 (혼동 행렬, 파생 변수 분포)
+├── dl_experiments.py       딥러닝 실험 실행 (파생 변수 · 구조 · Dropout · 클래스 가중치 비교)
 ├── main.ipynb              전체 과정 노트북 (Colab 실행 가능)
 ├── requirements.txt
 ├── data/ai4i2020.csv       학습 데이터
@@ -144,6 +169,7 @@ flowchart TD
 │   ├── agent.py            MaintenanceAgent       LLM 에이전트 · 도구 · 답변 검증
 │   ├── data_loader.py      AI4IDataLoader         데이터 로드 · 파생 변수 · 분할
 │   ├── dl_model.py         KerasFailureClassifier Keras 심층 신경망
+│   ├── dl_experiment.py    DLExperiment           딥러닝 설정별 비교 실험
 │   ├── models.py           FailurePredictor       모델 3종 학습 · 평가 · 예측
 │   ├── rule_checker.py     FailureRuleChecker     고장 유형별 기준값 비교
 │   └── llm_reporter.py     MaintenanceReporter    LangChain 정비 메모 · 판정 검증
@@ -157,6 +183,8 @@ flowchart TD
 ```bash
 pip install -r requirements.txt
 python train.py          # 예측 모델 학습 (건너뛰면 앱 첫 실행 때 자동 학습, 1~2분)
+python make_figures.py   # 보고서용 그래프 (선택)
+python dl_experiments.py # 딥러닝 설정 비교 실험 (선택, 수 분)
 streamlit run app.py
 ```
 
